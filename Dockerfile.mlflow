@@ -1,0 +1,19 @@
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+WORKDIR /app
+
+# Install system utilities for container healthchecks
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install MLflow server runtime with PostgreSQL & AWS S3 drivers
+RUN pip install --default-timeout=180 --retries=5 \
+    mlflow \
+    psycopg2-binary>=2.9.9 \
+    boto3>=1.35.0

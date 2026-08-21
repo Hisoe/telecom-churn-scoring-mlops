@@ -21,7 +21,7 @@ class AppSettings(BaseSettings):
         extra="forbid",
     )
 
-    # Runtime Exceution Environment
+    # Runtime Execution Environment
     ENVIRONMENT: Environment = Field(
         default=Environment.LOCAL,
         description="Target deployment environment",
@@ -35,36 +35,67 @@ class AppSettings(BaseSettings):
         description="Logging verbosity level",
     )
 
-    # AWS & Storage Infrastructure
+    # AWS & Mock S3 Infrastructure
     AWS_REGION: str = Field(
         default="ap-southeast-1",
         description="Primary AWS deployment region",
     )
+    AWS_ACCESS_KEY_ID: str | None = Field(
+        default=None,
+        description="AWS access key (or MinIO root user in local environment)",
+    )
+    AWS_SECRET_ACCESS_KEY: str | None = Field(
+        default=None,
+        description="AWS secret key (or MinIO root password in local environment)",
+    )
+    AWS_ENDPOINT_URL: str | None = Field(
+        default=None,
+        description="Custom endpoint URL for local MinIO S3 emulation",
+    )
+    AWS_EC2_METADATA_DISABLED: bool = Field(
+        default=False,
+        description="Disable IMDS probing when running outside EC2/ECS",
+    )
     S3_BUCKET_NAME: str = Field(
         default="telecom-churn-artifacts-local",
-        description="S3 bucket name for training data and ONNX model artifacts",
+        description="Target S3 bucket name for data and model artifacts",
     )
     LOCAL_DATA_DIR: str = Field(
         default="./data",
-        description="Local data directory fallback for offline execution",
+        description="Local fallback directory for offline dataset caching",
     )
 
-    # MLflow Tracking Configuration
+    # PostgreSQL Metadata Store
+    POSTGRES_USER: str = Field(default="mlflow")
+    POSTGRES_PASSWORD: str = Field(default="mlflowpassword")
+    POSTGRES_DB: str = Field(default="mlflow_db")
+    POSTGRES_PORT: int = Field(default=5432, ge=1024, le=65535)
+
+    # MLflow Tracking Server Configuration
     MLFLOW_TRACKING_URI: str = Field(
         default="http://127.0.0.1:5000",
-        description="MLflow tracking server URI (local container or AWS App Runner/ECS)",
+        description="MLflow tracking server URI",
     )
     MLFLOW_EXPERIMENT_NAME: str = Field(
-        default="telecom-customer-churn", description="MLflow experiment grouping namespace"
+        default="telecom-customer-churn",
+        description="MLflow experiment grouping namespace",
     )
     MODEL_REGISTRY_NAME: str = Field(
-        default="telecom-churn_lgbm",
+        default="telecom_churn_lgbm",
         description="Canonical registered model name in MLflow registry",
     )
+    MLFLOW_S3_ENDPOINT_URL: str | None = Field(
+        default=None,
+        description="Endpoint override for MLflow S3 artifact backend",
+    )
+    MLFLOW_S3_IGNORE_TLS: bool = Field(
+        default=False,
+        description="Disable TLS validation for local HTTP-based MinIO mock",
+    )
 
-    # Inference Serving Configuration (FastAPI / ECS)
-    API_HOST: str = Field(default="0.0.0.0", description="FastAPI host binding")
-    API_PORT: int = Field(default=8000, ge=1024, le=65535, description="FastAPI port")
+    # Inference Serving Parameters
+    API_HOST: str = Field(default="0.0.0.0")
+    API_PORT: int = Field(default=8000, ge=1024, le=65535)
     INFERENCE_BATCH_SIZE: int = Field(default=256, ge=1, le=10000)
     CHURN_RISK_THRESHOLD: float = Field(
         default=0.65,
