@@ -58,6 +58,9 @@ known-first-party = ["churn_engine"]
 quote-style = "double"
 indent-style = "space"
 
+[tool.ruff.lint.pep8-naming]
+ignore-names = ["X", "X_*", "y", "y_*", "X_train", "X_test", "X_val", "X_train_arr", "X_train_df", "X_test_arr", "X_test_df"]
+
 [tool.mypy]
 python_version = "3.11"
 strict = true
