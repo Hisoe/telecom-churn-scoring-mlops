@@ -87,7 +87,7 @@ def build_preprocessor_pipeline() -> ColumnTransformer:
         ]
     )
 
-    preprocessor = ColumnTransformer(
+    return ColumnTransformer(
         transformers=[
             ("num", numeric_transformer, numeric_features),
             ("cat", categorical_transformer, categorical_features),
@@ -95,8 +95,6 @@ def build_preprocessor_pipeline() -> ColumnTransformer:
         remainder="drop",
         verbose_feature_names_out=False,
     )
-
-    return preprocessor
 
 
 class FeatureStorePipeline:
