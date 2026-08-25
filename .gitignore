@@ -56,3 +56,6 @@ htmlcov/
 *.tfstate
 *.tfstate.*
 .terraform.lock.hcl
+
+# CatBoost training runtime artifacts
+catboost_info/
